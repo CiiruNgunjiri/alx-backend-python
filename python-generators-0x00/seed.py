@@ -1,11 +1,11 @@
 
---Import Required Modules
+# Import Required Modules
 
 import mariadb
 import csv
 import uuid
 
---Define connect_db() to Connect to MariaDB Server (without specifying a database)
+# Define connect_db() to Connect to MariaDB Server (without specifying a database)
 
 def connect_db():
     try:
@@ -19,7 +19,7 @@ def connect_db():
         print(f"Error: {err}")
         return None
 
---Define create_database(connection) to Create ALX_prodev Database if Not Exists
+# Define create_database(connection) to Create ALX_prodev Database if Not Exists
 
 def create_database(connection):
     cursor = connection.cursor()
@@ -27,7 +27,7 @@ def create_database(connection):
     cursor.close()
 
 
---Define connect_to_prodev() to Connect to ALX_prodev Database
+# Define connect_to_prodev() to Connect to ALX_prodev Database
 
 def connect_to_prodev():
     try:
@@ -42,7 +42,7 @@ def connect_to_prodev():
         print(f"Error: {err}")
         return None
 
---Define create_table(connection) to Create user_data Table
+# Define create_table(connection) to Create user_data Table
 
 def create_table(connection):
     cursor = connection.cursor()
@@ -61,7 +61,7 @@ def create_table(connection):
     print("Table user_data created successfully")
 
 
---Define insert_data(connection, csv_file_path) to Insert Data from CSV
+# Define insert_data(connection, csv_file_path) to Insert Data from CSV
 
 def insert_data(connection, csv_file_path):
     cursor = connection.cursor()
