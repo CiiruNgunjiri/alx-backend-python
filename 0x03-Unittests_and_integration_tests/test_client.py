@@ -14,7 +14,12 @@ import unittest
 from unittest.mock import patch, PropertyMock, Mock
 from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
-from fixtures import org_payload, repos_payload, expected_repos, apache2_repos  # Your fixtures
+from fixtures import (  # Adjust this import if needed
+    org_payload,
+    repos_payload,
+    expected_repos,
+    apache2_repos,
+)
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -28,24 +33,26 @@ class TestGithubOrgClient(unittest.TestCase):
     ])
     @patch("client.get_json")
     def test_org(self, org_name: str, mock_get_json: Mock) -> None:
-        """
-        Test org method returns expected payload and calls get_json once.
-        """
+        """Test org method returns expected payload and calls get_json once."""
         expected_payload = {"login": org_name}
         mock_get_json.return_value = expected_payload
 
         client = GithubOrgClient(org_name)
         result = client.org()
 
-        mock_get_json.assert_called_once_with(f"https://api.github.com/orgs/{org_name}")
+        mock_get_json.assert_called_once_with(
+            f"https://api.github.com/orgs/{org_name}"
+        )
         self.assertEqual(result, expected_payload)
 
     def test_public_repos_url(self) -> None:
-        """
-        Test _public_repos_url property returns repos_url from org payload.
-        """
+        """Test _public_repos_url property returns repos_url from org payload."""
         test_url = "https://api.github.com/orgs/test-org/repos"
-        with patch.object(GithubOrgClient, "org", new_callable=PropertyMock) as mock_org:
+        with patch.object(
+            GithubOrgClient,
+            "org",
+            new_callable=PropertyMock
+        ) as mock_org:
             mock_org.return_value = {"repos_url": test_url}
             client = GithubOrgClient("test-org")
             self.assertEqual(client._public_repos_url, test_url)
@@ -55,12 +62,12 @@ class TestGithubOrgClient(unittest.TestCase):
         (["repo1", "repo2", "repo3"],),
     ])
     def test_public_repos(self, repo_payload, mock_get_json):
-        """
-        Test that public_repos returns expected list of repo names.
-        """
+        """Test that public_repos returns expected list of repo names."""
         test_url = "https://api.github.com/orgs/test-org/repos"
         with patch.object(
-            GithubOrgClient, "_public_repos_url", new_callable=PropertyMock,
+            GithubOrgClient,
+            "_public_repos_url",
+            new_callable=PropertyMock,
             return_value=test_url,
         ) as mock_public_repos_url:
             mock_get_json.return_value = [{"name": r} for r in repo_payload]
@@ -76,10 +83,13 @@ class TestGithubOrgClient(unittest.TestCase):
         ({"license": {"key": "my_license"}}, "my_license", True),
         ({"license": {"key": "other_license"}}, "my_license", False),
     ])
-    def test_has_license(self, repo: dict, license_key: str, expected: bool) -> None:
-        """
-        Test has_license returns True when license key matches, else False.
-        """
+    def test_has_license(
+        self,
+        repo: dict,
+        license_key: str,
+        expected: bool
+    ) -> None:
+        """Test has_license returns True when license key matches, else False."""
         client = GithubOrgClient("test-org")
         self.assertEqual(client.has_license(repo, license_key), expected)
 
@@ -120,18 +130,17 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         cls.get_patcher.stop()
 
     def test_public_repos(self) -> None:
-        """
-        Test public_repos returns expected repo names.
-        """
+        """Test public_repos returns expected repo names."""
         client = GithubOrgClient("google")
         self.assertEqual(client.public_repos(), self.expected_repos)
 
     def test_public_repos_with_license(self) -> None:
-        """
-        Test public_repos filters repos correctly by license.
-        """
+        """Test public_repos filters repos correctly by license."""
         client = GithubOrgClient("google")
-        self.assertEqual(client.public_repos(license="apache-2.0"), self.apache2_repos)
+        self.assertEqual(
+            client.public_repos(license="apache-2.0"),
+            self.apache2_repos
+        )
 
 
 if __name__ == "__main__":
