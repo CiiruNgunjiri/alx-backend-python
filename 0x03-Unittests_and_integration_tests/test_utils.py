@@ -38,11 +38,14 @@ class TestAccessNestedMap(unittest.TestCase):
             ({"a": {"b": 2}}, ("a", "b"), 2),
         ]
     )
-    def test_access_nested_map(self, nested_map: dict, path: tuple, expected):
+    def test_access_nested_map(self, 
+                               nested_map: dict, 
+                               path: tuple, 
+                               expected):
         """
-        Test that access_nested_map returns the expected value for various inputs.
-        """
-        """
+        Test for access_nested_map returns the expected value for various inputs.
+        
+        
         Args:
             nested_map (dict): Dictionary to traverse.
             path (tuple): Sequence of keys to access nested value.
@@ -57,10 +60,12 @@ class TestAccessNestedMap(unittest.TestCase):
         ]
     )
     def test_access_nested_map_exception(
-        self, nested_map: dict, path: tuple, expected_exception_msg: str
+        self, nested_map: dict, 
+        path: tuple, 
+        expected_exception_msg: str
     ):
         """
-        Test that access_nested_map raises KeyError with the missing key name.
+        Test for access_nested_map raises KeyError with the missing key name.
 
         Ensures the error message matches exactly the missing key for easier
         debugging and test reliability.
@@ -90,9 +95,12 @@ class TestGetJson(unittest.TestCase):
         ]
     )
     @patch("utils.requests.get")
-    def test_get_json(self, test_url: str, test_payload: dict, mock_get: Mock):
+    def test_get_json(self, 
+                      test_url: str, 
+                      test_payload: dict, 
+                      mock_get: Mock):
         """
-        Test that get_json calls requests.get once and returns the expected payload.
+        Test for get_json calls requests.get once and returns the expected payload.
         """
         """
         Args:
@@ -123,7 +131,7 @@ class TestMemoize(unittest.TestCase):
 
     def test_memoize(self):
         """
-        Test that memoize caches a_method result when accessed through a_property.
+        Test to memoize caches a_method result when accessed through a_property.
 
         Patches a_method to track its call count and return a controlled value,
         then accesses a_property twice and asserts a_method called once.
