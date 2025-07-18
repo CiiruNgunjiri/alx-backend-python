@@ -34,23 +34,13 @@ class TestAccessNestedMap(unittest.TestCase):
     @parameterized.expand(
         [
             ({"a": 1}, ("a",), 1),
-            (
-                {"a": {"b": 2}},
-                ("a",),
-                {"b": 2},
-            ),
-            (
-                {"a": {"b": 2}},
-                ("a", "b"),
-                2,
-            ),
+            ({"a": {"b": 2}}, ("a",), {"b": 2}),
+            ({"a": {"b": 2}}, ("a", "b"), 2),
         ]
     )
-    def test_access_nested_map(
-        self, nested_map: dict, path: tuple, expected
-    ) -> None:
+    def test_access_nested_map(self, nested_map: dict, path: tuple, expected):
         """
-        Test that access_nested_map returns the expected value for various paths.
+        Test that access_nested_map returns the expected value for various inputs.
 
         Args:
             nested_map (dict): Dictionary to traverse.
@@ -62,16 +52,12 @@ class TestAccessNestedMap(unittest.TestCase):
     @parameterized.expand(
         [
             ({}, ("a",), "'a'"),
-            (
-                {"a": 1},
-                ("a", "b"),
-                "'b'",
-            ),
+            ({"a": 1}, ("a", "b"), "'b'"),
         ]
     )
     def test_access_nested_map_exception(
         self, nested_map: dict, path: tuple, expected_exception_msg: str
-    ) -> None:
+    ):
         """
         Test that access_nested_map raises KeyError with the missing key name.
 
@@ -85,10 +71,7 @@ class TestAccessNestedMap(unittest.TestCase):
         """
         with self.assertRaises(KeyError) as context:
             access_nested_map(nested_map, path)
-        self.assertEqual(
-            str(context.exception),
-            expected_exception_msg,
-        )
+        self.assertEqual(str(context.exception), expected_exception_msg)
 
 
 class TestGetJson(unittest.TestCase):
@@ -106,14 +89,9 @@ class TestGetJson(unittest.TestCase):
         ]
     )
     @patch("utils.requests.get")
-    def test_get_json(
-        self,
-        test_url: str,
-        test_payload: dict,
-        mock_get: Mock,
-    ) -> None:
+    def test_get_json(self, test_url: str, test_payload: dict, mock_get: Mock):
         """
-        Test that get_json calls requests.get once and returns the expected JSON.
+        Test that get_json calls requests.get once and returns the expected payload.
 
         Args:
             test_url (str): The URL to fetch JSON from.
@@ -141,7 +119,7 @@ class TestMemoize(unittest.TestCase):
     and reuses it in subsequent calls without invoking the method again.
     """
 
-    def test_memoize(self) -> None:
+    def test_memoize(self):
         """
         Test that memoize caches a_method result when accessed through a_property.
 
@@ -180,3 +158,4 @@ class TestMemoize(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
