@@ -149,11 +149,11 @@ class TestMemoize(unittest.TestCase):
             result1 = test_obj.a_property
             result2 = test_obj.a_property
 
+            # Validate returned values are mocked
             self.assertEqual(result1, 42)
-            self.assertEqual(result2, 42)  # Validate returned values are mocked
-
+            self.assertEqual(result2, 42)
+              
             mock_a_method.assert_called_once()
-
 
 if __name__ == "__main__":
     unittest.main()
