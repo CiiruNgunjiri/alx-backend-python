@@ -25,9 +25,10 @@ class TestGithubOrgClient(unittest.TestCase):
         ("abc",),
     ])
     @patch("client.get_json")
-    def test_org(self, org_name, mock_get_json):
+    def test_org(self, org_name, 
+                 mock_get_json):
         """
-        Test that org property returns expected payload and calls get_json correctly.
+        Test for org property returns expected payload and calls get_json correctly.
 
         Because org is memoized as a property, access without parentheses.
         """
@@ -58,10 +59,14 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(client._public_repos_url, test_url)
 
     @parameterized.expand([
-        (["repo1", "repo2", "repo3"],),
+        (["repo1", 
+          "repo2", 
+          "repo3"],),
     ])
     @patch("client.get_json")
-    def test_public_repos(self, repo_payload, mock_get_json):
+    def test_public_repos(self, 
+                          repo_payload, 
+                          mock_get_json):
         """
         Test public_repos returns expected repo names from a mocked repos payload.
 
@@ -85,8 +90,10 @@ class TestGithubOrgClient(unittest.TestCase):
             mock_get_json.assert_called_once_with(test_url)
 
     @parameterized.expand([
-        ({"license": {"key": "my_license"}}, "my_license", True),
-        ({"license": {"key": "other_license"}}, "my_license", False),
+        ({"license": {"key": "my_license"}},
+          "my_license", True),
+        ({"license": {"key": "other_license"}}, 
+         "my_license", False),
     ])
     def test_has_license(self, repo, license_key, expected):
         """
@@ -98,8 +105,14 @@ class TestGithubOrgClient(unittest.TestCase):
 
 
 @parameterized_class(
-    ("org_payload", "repos_payload", "expected_repos", "apache2_repos"),
-    [(org_payload, repos_payload, expected_repos, apache2_repos)],
+    ("org_payload", 
+     "repos_payload", 
+     "expected_repos", 
+     "apache2_repos"),
+    [(org_payload, 
+      repos_payload, 
+      expected_repos, 
+      apache2_repos)],
 )
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """
@@ -132,7 +145,8 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     def test_public_repos(self):
         """Test public_repos returns expected list of repo names from fixture."""
         client = GithubOrgClient(self.org_payload["login"])
-        self.assertEqual(client.public_repos(), self.expected_repos)
+        self.assertEqual(client.public_repos(),
+                         self.expected_repos)
 
     def test_public_repos_with_license(self):
         """Test public_repos filters by license correctly from fixture."""
