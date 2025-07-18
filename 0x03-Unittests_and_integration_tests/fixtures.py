@@ -949,3 +949,18 @@ TEST_PAYLOAD = [
   )
 ]
 
+org_payload = {
+    "login": "google",
+    "repos_url": "https://api.github.com/orgs/google/repos",
+    # ... any other keys your tests expect ...
+}
+
+repos_payload = [
+    {"name": "repo1", "license": {"key": "apache-2.0"}},
+    {"name": "repo2", "license": {"key": "mit"}},
+    # ... more repo dicts ...
+]
+
+expected_repos = ["repo1", "repo2"]  # List of repo names your tests expect
+
+apache2_repos = ["repo1"]  # Repos filtered by apache2 license, or as per your test
