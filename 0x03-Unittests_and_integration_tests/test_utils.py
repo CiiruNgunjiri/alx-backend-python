@@ -41,7 +41,8 @@ class TestAccessNestedMap(unittest.TestCase):
     def test_access_nested_map(self, nested_map: dict, path: tuple, expected):
         """
         Test that access_nested_map returns the expected value for various inputs.
-
+        """
+        """
         Args:
             nested_map (dict): Dictionary to traverse.
             path (tuple): Sequence of keys to access nested value.
@@ -92,7 +93,8 @@ class TestGetJson(unittest.TestCase):
     def test_get_json(self, test_url: str, test_payload: dict, mock_get: Mock):
         """
         Test that get_json calls requests.get once and returns the expected payload.
-
+        """
+        """
         Args:
             test_url (str): The URL to fetch JSON from.
             test_payload (dict): The mocked JSON payload to be returned.
@@ -158,4 +160,3 @@ class TestMemoize(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
