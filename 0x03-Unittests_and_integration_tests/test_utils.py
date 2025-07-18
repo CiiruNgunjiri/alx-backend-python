@@ -20,24 +20,45 @@ class TestAccessNestedMap(unittest.TestCase):
     """
 
     @parameterized.expand([
-        ({"a": 1}, ("a",), 1),
-        ({"a": {"b": 2}}, ("a",), {"b": 2}),
-        ({"a": {"b": 2}}, ("a", "b"), 2),
+        ({"a": 1},
+         ("a",),
+         1),
+
+        ({"a": {"b": 2}},
+         ("a",),
+         {"b": 2}),
+
+        ({"a": {"b": 2}},
+         ("a", "b"),
+         2),
     ])
-    def test_access_nested_map(self, nested_map: dict, path: tuple, expected) -> None:
+
+    def test_access_nested_map(self, nested_map: dict, 
+                               path: tuple,
+                               expected) -> None:
         """Test access_nested_map returns expected nested value for given path."""
-        self.assertEqual(access_nested_map(nested_map, path), expected)
+        self.assertEqual(access_nested_map(nested_map, path),
+                         expected)
+
 
     @parameterized.expand([
-        ({}, ("a",), "'a'"),
-        ({"a": 1}, ("a", "b"), "'b'"),
+        ({},("a",), "'a'"),
+
+        ({"a": 1}, 
+         ("a", "b"),
+         "'b'"),
     ])
+
     def test_access_nested_map_exception(
-        self, nested_map: dict, path: tuple, expected_exception_msg: str
-    ) -> None:
+        self, nested_map: dict, 
+        path: tuple, 
+        expected_exception_msg: str) -> None:
+
         """Test access_nested_map raises KeyError with correct message on missing keys."""
+
         with self.assertRaises(KeyError) as context:
             access_nested_map(nested_map, path)
+
         self.assertEqual(str(context.exception), expected_exception_msg)
 
 
@@ -50,9 +71,14 @@ class TestGetJson(unittest.TestCase):
         ("http://example.com", {"payload": True}),
         ("http://holberton.io", {"payload": False}),
     ])
+
     @patch("utils.requests.get")
-    def test_get_json(self, test_url: str, test_payload: dict, mock_get: Mock) -> None:
-        """
+    
+    def test_get_json(self, test_url: str, 
+                      test_payload: dict,
+                      mock_get: Mock) -> None:
+    
+    """
         Test get_json returns expected payload and calls requests.get with URL.
         """
         mock_response = Mock()
@@ -62,6 +88,7 @@ class TestGetJson(unittest.TestCase):
         result = get_json(test_url)
 
         mock_get.assert_called_once_with(test_url)
+
         self.assertEqual(result, test_payload)
 
 
@@ -94,10 +121,13 @@ class TestMemoize(unittest.TestCase):
 
         with patch.object(test_obj, 'a_method', return_value=42) as mock_a_method:
             result1 = test_obj.a_property
+
             result2 = test_obj.a_property
 
             self.assertEqual(result1, 42)
+            
             self.assertEqual(result2, 42)
+            
             mock_a_method.assert_called_once()
 
 if __name__ == "__main__":
