@@ -9,7 +9,12 @@ import unittest
 from unittest.mock import patch, PropertyMock, Mock
 from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
-from fixtures import org_payload, repos_payload, expected_repos, apache2_repos
+from fixtures import (
+    org_payload,
+    repos_payload,
+    expected_repos,
+    apache2_repos,
+)
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -46,7 +51,9 @@ class TestGithubOrgClient(unittest.TestCase):
         test_url = "https://api.github.com/orgs/test-org/repos"
         client = GithubOrgClient("test-org")
 
-        with patch.object(GithubOrgClient, "org", new_callable=PropertyMock) as mock_org:
+        with patch.object(
+            GithubOrgClient, "org", new_callable=PropertyMock
+        ) as mock_org:
             mock_org.return_value = {"repos_url": test_url}
             self.assertEqual(client._public_repos_url, test_url)
 
@@ -64,7 +71,12 @@ class TestGithubOrgClient(unittest.TestCase):
         mock_get_json.return_value = [{"name": r} for r in repo_payload]
         client = GithubOrgClient("test-org")
 
-        with patch.object(GithubOrgClient, "_public_repos_url", new_callable=PropertyMock, return_value=test_url) as mock_url:
+        with patch.object(
+            GithubOrgClient,
+            "_public_repos_url",
+            new_callable=PropertyMock,
+            return_value=test_url,
+        ) as mock_url:
             repos = client.public_repos()
 
             expected_repo_names = repo_payload
@@ -87,7 +99,7 @@ class TestGithubOrgClient(unittest.TestCase):
 
 @parameterized_class(
     ("org_payload", "repos_payload", "expected_repos", "apache2_repos"),
-    [(org_payload, repos_payload, expected_repos, apache2_repos)]
+    [(org_payload, repos_payload, expected_repos, apache2_repos)],
 )
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """
@@ -127,7 +139,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         client = GithubOrgClient(self.org_payload["login"])
         self.assertEqual(
             client.public_repos(license="apache-2.0"),
-            self.apache2_repos
+            self.apache2_repos,
         )
 
 
