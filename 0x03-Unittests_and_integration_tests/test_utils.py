@@ -110,7 +110,7 @@ class TestGetJson(unittest.TestCase):
         self,
         test_url: str,
         test_payload: dict,
-        mock_get: Mock
+        mock_get: Mock,
     ) -> None:
         """
         Test that get_json calls requests.get once and returns the expected JSON.
@@ -170,7 +170,7 @@ class TestMemoize(unittest.TestCase):
             result1 = test_obj.a_property
             result2 = test_obj.a_property
 
-            # Validate the returned values are as mocked
+            # Validate returned values are as mocked
             self.assertEqual(result1, 42)
             self.assertEqual(result2, 42)
 
@@ -180,4 +180,3 @@ class TestMemoize(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
