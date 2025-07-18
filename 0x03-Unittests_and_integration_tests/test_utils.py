@@ -38,14 +38,11 @@ class TestAccessNestedMap(unittest.TestCase):
             ({"a": {"b": 2}}, ("a", "b"), 2),
         ]
     )
-    def test_access_nested_map(self, 
-                               nested_map: dict, 
-                               path: tuple, 
-                               expected):
+    def test_access_nested_map(self, nested_map: dict, path: tuple, expected):
         """
-        Test for access_nested_map returns the expected value for various inputs.
-        
-        
+        Test that access_nested_map returns the expected value for various
+        inputs.
+
         Args:
             nested_map (dict): Dictionary to traverse.
             path (tuple): Sequence of keys to access nested value.
@@ -60,12 +57,10 @@ class TestAccessNestedMap(unittest.TestCase):
         ]
     )
     def test_access_nested_map_exception(
-        self, nested_map: dict, 
-        path: tuple, 
-        expected_exception_msg: str
+        self, nested_map: dict, path: tuple, expected_exception_msg: str
     ):
         """
-        Test for access_nested_map raises KeyError with the missing key name.
+        Test that access_nested_map raises KeyError with the missing key name.
 
         Ensures the error message matches exactly the missing key for easier
         debugging and test reliability.
@@ -95,28 +90,24 @@ class TestGetJson(unittest.TestCase):
         ]
     )
     @patch("utils.requests.get")
-    def test_get_json(self, 
-                      test_url: str, 
-                      test_payload: dict, 
-                      mock_get: Mock):
+    def test_get_json(
+        self, test_url: str, test_payload: dict, mock_get: Mock
+    ):
         """
-        Test for get_json calls requests.get once and returns the expected payload.
-        """
-        """
+        Test that get_json calls requests.get once and returns the expected
+        payload.
+
         Args:
             test_url (str): The URL to fetch JSON from.
             test_payload (dict): The mocked JSON payload to be returned.
             mock_get (Mock): Mock of requests.get injected by patch.
         """
-        # Setup the mock response to return the test payload as json
         mock_response = Mock()
         mock_response.json.return_value = test_payload
         mock_get.return_value = mock_response
 
-        # Call get_json and verify output
         result = get_json(test_url)
 
-        # Verify requests.get call and returned JSON
         mock_get.assert_called_once_with(test_url)
         self.assertEqual(result, test_payload)
 
@@ -131,7 +122,8 @@ class TestMemoize(unittest.TestCase):
 
     def test_memoize(self):
         """
-        Test to memoize caches a_method result when accessed through a_property.
+        Test that memoize caches a_method result when accessed through
+        a_property.
 
         Patches a_method to track its call count and return a controlled value,
         then accesses a_property twice and asserts a_method called once.
@@ -158,11 +150,9 @@ class TestMemoize(unittest.TestCase):
             result1 = test_obj.a_property
             result2 = test_obj.a_property
 
-            # Validate returned values are as mocked
             self.assertEqual(result1, 42)
             self.assertEqual(result2, 42)
 
-            # Assert that a_method was called exactly once due to caching
             mock_a_method.assert_called_once()
 
 
