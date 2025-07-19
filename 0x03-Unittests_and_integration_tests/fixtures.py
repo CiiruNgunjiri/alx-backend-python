@@ -957,16 +957,16 @@ org_payload = {
 }
 
 repos_payload = [
-    {"name": "angular", "license": {"key": "mit"}},
-    {"name": "benchmark", "license": {"key": "apache-2.0"}}
+    {"name": "repo1", "license": {"key": "mit"}},
+    {"name": "repo2", "license": {"key": "apache-2.0"}}
 ]
 
 
 expected_repos = [
-    "angular",
-    "benchmark"
+    "repo1",
+    "repo2"
 ]
 
 apache2_repos = [
-    "benchmark"
+    "repo2"
 ]
