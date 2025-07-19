@@ -78,7 +78,9 @@ class TestGithubOrgClient(unittest.TestCase):
         """
         test_url = "https://api.github.com/orgs/test-org/repos"
         mock_get_json.return_value = [{"name": r} for r in repo_payload]
-        client = GithubOrgClient("test-org")
+        client = GithubOrgClient("test-org", self.org_payload["login"])
+        repos = client.public_repos()
+        self.assertEqual(repos, self.expected_repos)
 
         with patch.object(
             GithubOrgClient,
