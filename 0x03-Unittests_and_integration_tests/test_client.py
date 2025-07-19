@@ -105,7 +105,11 @@ class TestGithubOrgClient(unittest.TestCase):
         if a repo license matches the license_key.
         """
         client = GithubOrgClient("test-org")
-        result = client.has_license(repo, license_key)
+        try:
+            result = client.has_license(repo, license_key)
+        except Exception as e:
+            print(f"Error in has_license with repo={repo}, license_key={license_key}: {e}")
+            raise
         self.assertEqual(result, expected)
 
 
