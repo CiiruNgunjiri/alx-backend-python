@@ -16,7 +16,7 @@ from fixtures import (
     org_payload,
     repos_payload,
     expected_repos,
-    apache2_repos,
+    apache2_repos
 )
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
