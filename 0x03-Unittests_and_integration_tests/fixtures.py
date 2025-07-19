@@ -1,4 +1,3 @@
-# fixtures.py
 #!/usr/bin/env python3
 
 TEST_PAYLOAD = [
