@@ -21,6 +21,10 @@ class MessageViewSet(viewsets.ModelViewSet):
     ordering_fields = ['sent_at']
     ordering = ['-sent_at']
 
+    def perform_create(self, serializer):
+        sender = self.request.user
+        serializer.save(sender=sender)
+        
     def create(self, request, *args, **kwargs):
         sender_id = request.data.get('sender')
         conversation_id = request.data.get('conversation')
