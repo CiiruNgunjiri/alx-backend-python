@@ -49,7 +49,9 @@ class TestGithubOrgClient(unittest.TestCase):
         (["repo1", "repo2", "repo3"],),
     ])
     @patch("client.get_json")
-    def test_public_repos(self, repo_payload: list, mock_get_json: Mock) -> None:
+    def test_public_repos(self,
+                          repo_payload: list,
+                          mock_get_json: Mock) -> None:
         """
         Test public_repos returns expected repo names from mocked payload.
         """
@@ -72,7 +74,10 @@ class TestGithubOrgClient(unittest.TestCase):
         ({"license": {"key": "my_license"}}, "my_license", True),
         ({"license": {"key": "other_license"}}, "my_license", False),
     ])
-    def test_has_license(self, repo: dict, license_key: str, expected: bool) -> None:
+    def test_has_license(self,
+                         repo: dict,
+                         license_key: str,
+                         expected: bool) -> None:
         """Test has_license identifies matching license key correctly."""
         client = GithubOrgClient("test-org")
         result = client.has_license(repo, license_key)
