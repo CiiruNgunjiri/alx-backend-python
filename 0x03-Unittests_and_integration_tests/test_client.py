@@ -2,19 +2,15 @@
 """
 Test suite for client.GithubOrgClient.
 
+
 Contains unit tests and integration tests using fixtures and mocks.
 """
 
-import sys
-import os
 import unittest
 from unittest.mock import patch, PropertyMock, Mock
 from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
 from fixtures import org_payload, repos_payload, expected_repos, apache2_repos
-
-# Add current directory to sys.path for module imports
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -25,7 +21,7 @@ class TestGithubOrgClient(unittest.TestCase):
         ("abc",),
     ])
     @patch("client.get_json")
-    def test_org(self, org_name, mock_get_json):
+    def test_org(self, org_name: str, mock_get_json: Mock) -> None:
         """Test GithubOrgClient.org returns expected
         and calls get_json correctly."""
         expected_payload = {"login": org_name}
@@ -39,7 +35,7 @@ class TestGithubOrgClient(unittest.TestCase):
         )
         self.assertEqual(result, expected_payload)
 
-    def test_public_repos_url(self):
+    def test_public_repos_url(self) -> None:
         """Unit-test the _public_repos_url property."""
         expected_url = "https://api.github.com/orgs/test-org/repos"
         client = GithubOrgClient("test-org")
@@ -53,7 +49,7 @@ class TestGithubOrgClient(unittest.TestCase):
         (["repo1", "repo2", "repo3"],),
     ])
     @patch("client.get_json")
-    def test_public_repos(self, repo_payload, mock_get_json):
+    def test_public_repos(self, repo_payload: list, mock_get_json: Mock) -> None:
         """
         Test public_repos returns expected repo names from mocked payload.
         """
@@ -76,7 +72,7 @@ class TestGithubOrgClient(unittest.TestCase):
         ({"license": {"key": "my_license"}}, "my_license", True),
         ({"license": {"key": "other_license"}}, "my_license", False),
     ])
-    def test_has_license(self, repo, license_key, expected):
+    def test_has_license(self, repo: dict, license_key: str, expected: bool) -> None:
         """Test has_license identifies matching license key correctly."""
         client = GithubOrgClient("test-org")
         result = client.has_license(repo, license_key)
@@ -91,7 +87,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     """Integration tests for GithubOrgClient using fixture data."""
 
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         cls.get_patcher = patch("requests.get")
         cls.mock_get = cls.get_patcher.start()
 
@@ -110,15 +106,15 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         cls.mock_get.side_effect = json_side_effect
 
     @classmethod
-    def tearDownClass(cls):
+    def tearDownClass(cls) -> None:
         cls.get_patcher.stop()
 
-    def test_public_repos(self):
+    def test_public_repos(self) -> None:
         """public_repos returns expected repo names from payload fixture."""
         client = GithubOrgClient(self.org_payload["login"])
         self.assertEqual(client.public_repos(), self.expected_repos)
 
-    def test_public_repos_with_license(self):
+    def test_public_repos_with_license(self) -> None:
         """Test public_repos filters repos by license correctly."""
         client = GithubOrgClient(self.org_payload["login"])
         filtered_repos = client.public_repos(license="apache-2.0")

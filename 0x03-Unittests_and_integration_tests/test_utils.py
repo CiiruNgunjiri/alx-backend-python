@@ -2,8 +2,10 @@
 """
 Unit tests for the utils module.
 
+
 This module tests various utility functions to ensure they behave as expected
 under different scenarios, including:
+
 
 - access_nested_map: Correctly retrieves nested dictionary values and raises
   informative exceptions on missing keys.
@@ -11,6 +13,7 @@ under different scenarios, including:
   actual HTTP requests, using mocks for external calls.
 - memoize: Caches the result of a method to avoid repeated expensive calls,
   verified via mock assertions that the target method is only invoked once.
+
 
 These tests utilize unittest's testing framework, parameterized inputs for
 concise multi-case testing, and unittest.mock for patching dependencies.
@@ -38,7 +41,7 @@ class TestAccessNestedMap(unittest.TestCase):
             ({"a": {"b": 2}}, ("a", "b"), 2),
         ]
     )
-    def test_access_nested_map(self, nested_map: dict, path: tuple, expected):
+    def test_access_nested_map(self, nested_map: dict, path: tuple, expected) -> None:
         """
         Test that access_nested_map returns the expected value for various
         inputs.
@@ -58,7 +61,7 @@ class TestAccessNestedMap(unittest.TestCase):
     )
     def test_access_nested_map_exception(
         self, nested_map: dict, path: tuple, expected_exception_msg: str
-    ):
+    ) -> None:
         """
         Test that access_nested_map raises KeyError with the missing key name.
 
@@ -92,7 +95,7 @@ class TestGetJson(unittest.TestCase):
     @patch("utils.requests.get")
     def test_get_json(
         self, test_url: str, test_payload: dict, mock_get: Mock
-    ):
+    ) -> None:
         """
         Test that get_json calls requests.get once and returns the expected
         payload.
@@ -120,7 +123,7 @@ class TestMemoize(unittest.TestCase):
     and reuses it in subsequent calls without invoking the method again.
     """
 
-    def test_memoize(self):
+    def test_memoize(self) -> None:
         """
         Test that memoize caches a_method result when accessed through
         a_property.
