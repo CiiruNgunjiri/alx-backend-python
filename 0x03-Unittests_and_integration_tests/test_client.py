@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
 """
-Test suite for client.GithubOrgClient.
+Automated tests for the client.GithubOrgClient class.
 
+This module contains both unit tests and integration tests to validate
+the behavior of GithubOrgClient's main interfaces for interacting with
+the GitHub API. It covers scenarios including:
+- Retrieving organization information and public repositories
+- Filtering repositories by license
+- Verifying correct use of HTTP requests, mocking, and memoization
 
-Contains unit tests and integration tests using fixtures and mocks.
+Integration tests rely on static fixtures and simulate API responses.
+Unit tests isolate individual methods using mock objects and
+parameterized inputs to ensure robust, repeatable validation.
 """
 
 import unittest
