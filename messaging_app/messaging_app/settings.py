@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'chats',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -132,14 +134,27 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         # You can add more authentication classes if needed:
         # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.TokenAuthentication',
     ],
+    'DEFAULT_PAGINATION_CLASS': 'chats.pagination.MessagePagination', 'PAGE_SIZE': 20,
 }
 
+#JWT Settings
+from datetime import timedelta
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME' : timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME' : timedelta(days=1),
+    'ROTATE_REFRESH_TOKEN' : True,
+    'BLACKLIST_AFTER_ROTATION' : True,
+}
 
 AUTH_USER_MODEL = 'chats.User'

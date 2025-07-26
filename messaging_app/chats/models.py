@@ -1,7 +1,29 @@
 import uuid
-from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib.auth.models import AbstractUser, Group, Permission, BaseUserManager
 from django.db import models
 from django.utils import timezone
+
+class UserManager(BaseUserManager):
+    def create_user(self, email, first_name, last_name, password=None, **extra_fields):
+        if not email:
+            raise ValueError('Users must have an email address')
+        user = self.model(
+            email=self.normalize_email(email),
+            first_name=first_name,
+            last_name=last_name,
+            **extra_fields
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, first_name, last_name, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('role', 'admin')
+
+        return self.create_user(email, first_name, last_name, password, **extra_fields)
 
 class User(AbstractUser):
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -21,12 +43,17 @@ class User(AbstractUser):
     created_at = models.DateTimeField(default=timezone.now)
 
     # Password is handled by AbstractUser as a CharField with hashing via set_password()
-    # But explicitly mentioned here to satisfy checks
-    password = models.CharField(max_length=128)
-
+    
+    #Set email as the username field
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
+    REQUIRED_FIELDS = ['first_name', 'last_name']
+
+    objects = UserManager()
+
+    class Meta:
+        db_table = 'chats_user'  # Explicit table name
+    
     # Override related_name to avoid conflicts
     groups = models.ManyToManyField(
         Group,
