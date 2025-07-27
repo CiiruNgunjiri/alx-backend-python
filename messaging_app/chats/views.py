@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
@@ -6,7 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Conversation, Message
 from .serializers import ConversationSerializer, MessageSerializer
-from .permissions import IsParticipantOfConversation
+from .permissions import IsParticipantOfConversation, IsMessageOwner
 from .filters import MessageFilter
 from .pagination import MessagePagination
 
@@ -26,15 +25,16 @@ class ConversationViewSet(viewsets.ModelViewSet):
         return self.queryset.filter(participants=user)
 
     def perform_create(self, serializer):
-        # Create conversation and add the request user as participant automatically
-        conversation = serializer.save()
-        conversation.participants.add(self.request.user)
+        conversation = serializer.validated_data.get('conversation')
+        if not conversation or self.request.user not in conversation.participants.all():
+            raise PermissionDenied("You must be a participant to send messages in this conversation.")
+        serializer.save(sender=self.request.user)
 
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
-    permission_classes = [IsAuthenticated, IsParticipantOfConversation]
+    permission_classes = [IsAuthenticated, IsMessageOwner, IsParticipantOfConversation]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
     filterset_class = MessageFilter
     pagination_class = MessagePagination
@@ -57,3 +57,17 @@ class MessageViewSet(viewsets.ModelViewSet):
 
         # Save message with sender set to the current user
         serializer.save(sender=self.request.user)
+
+    def get_permissions(self):
+        # Customize permissions per action if needed
+        if self.action == 'list':
+            # Allow any authenticated user to list messages
+            return [IsAuthenticated()]
+        return super().get_permissions()
+
+    def retrieve(self, request, *args, **kwargs):
+        message = self.get_object()
+        if not self.check_object_permissions(request, message):
+            raise PermissionDenied("You do not have permission to access this message.")
+        serializer = self.get_serializer(message)
+        return Response(serializer.data)
