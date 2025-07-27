@@ -144,7 +144,10 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.TokenAuthentication',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'chats.pagination.MessagePagination',
+    'DEFAULT_PAGINATION_CLASS': [
+        'chats.pagination.MessagePagination', 
+        'rest_framework.pagination.PageNumberPagination',
+    ],
     'PAGE_SIZE': 20,
 }
 

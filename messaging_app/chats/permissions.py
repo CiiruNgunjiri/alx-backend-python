@@ -7,6 +7,7 @@ class IsMessageOwner(BasePermission):
     """
     Permission to check if the user is the owner (sender or receiver) of the message.
     """
+    message = 'You must be the sender of this message.'
 
     def has_object_permission(self, request, view, obj):
         user = request.user
@@ -33,6 +34,7 @@ class IsParticipantOfConversation(BasePermission):
     """
     Allow only participants of a conversation to send, view, update, or delete messages.
     """
+    message = 'You must be a participant of this conversation.'
 
     def has_permission(self, request, view):
         # Only allow authenticated users
