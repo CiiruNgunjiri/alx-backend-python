@@ -1,7 +1,8 @@
 import django_filters
-from .models import Message
 from django.utils import timezone
 from datetime import timedelta
+from .models import Message
+
 
 class MessageFilter(django_filters.FilterSet):
     sender = django_filters.CharFilter(field_name='sender__email', lookup_expr='iexact')
@@ -12,7 +13,7 @@ class MessageFilter(django_filters.FilterSet):
 
     class Meta:
         model = Message
-        fields = ['sender', 'conversation', 'after', 'before']
+        fields = ['sender', 'conversation', 'after', 'before', 'last_hours']
 
     def filter_last_hours(self, queryset, name, value):
         if value:

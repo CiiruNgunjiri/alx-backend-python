@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import User, Conversation, Message
 
+
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, min_length=8)
 
@@ -33,9 +34,13 @@ class MessageSerializer(serializers.ModelSerializer):
     message_body = serializers.CharField()
     sent_at = serializers.SerializerMethodField()
 
+    # Optional: include conversation id if useful to API consumer
+    # conversation = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = Message
         fields = ['message_id', 'sender', 'message_body', 'sent_at']
+        # If you add conversation field above, include it here
 
     def get_sent_at(self, obj):
         return obj.sent_at.isoformat()
@@ -59,6 +64,11 @@ class ConversationSerializer(serializers.ModelSerializer):
         participants_data = validated_data.pop('participants')
         conversation = Conversation.objects.create(**validated_data)
         for participant_data in participants_data:
-            user_obj, _ = User.objects.get_or_create(email=participant_data['email'], defaults=participant_data)
+            try:
+                user_obj = User.objects.get(email=participant_data['email'])
+            except User.DoesNotExist:
+                raise serializers.ValidationError(
+                    f"User with email {participant_data['email']} does not exist."
+                )
             conversation.participants.add(user_obj)
         return conversation
