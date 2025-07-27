@@ -1,5 +1,6 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS, IsAuthenticated
 from .models import Conversation, Message
+from rest_framework import permissions
 
 
 class IsMessageOwner(BasePermission):
@@ -30,38 +31,40 @@ class IsConversationParticipant(BasePermission):
 
 class IsParticipantOfConversation(BasePermission):
     """
-    Custom permission to only allow participants of a conversation to access it.
-    This handles both generic permission and object permission.
+    Allow only participants of a conversation to send, view, update, or delete messages.
     """
 
     def has_permission(self, request, view):
-        user = request.user
-        if not user or not user.is_authenticated:
+        # Only allow authenticated users
+        if not request.user or not request.user.is_authenticated:
             return False
 
-        # For list and create actions, allow authenticated users (you may tighten this if needed)
+        # For list or create actions, allow authenticated users (assuming participant checks happen at object-level)
         if view.action in ['list', 'create']:
             return True
 
-        # For detail actions (retrieve, update, partial_update, destroy), object permission will be checked
+        # For retrieve, update, partial_update, delete, allow and defer to `has_object_permission`
         return True
 
     def has_object_permission(self, request, view, obj):
         user = request.user
-        if not user or not user.is_authenticated:
-            return False
 
-        # Permission logic for Conversation objects
+        # Check participant access for Conversation object
         if isinstance(obj, Conversation):
             return user in obj.participants.all()
 
-        # Permission logic for Message objects
+        # Check participant access for Message object by verifying user is participant in related conversation
         if isinstance(obj, Message):
-            return user in obj.conversation.participants.all()
+            # For read-only operations (GET, HEAD, OPTIONS), allow participants
+            if request.method in SAFE_METHODS:
+                return user in obj.conversation.participants.all()
+            
+            # For unsafe methods (PUT, PATCH, DELETE), allow only if user is participant
+            if request.method in ['PUT', 'PATCH', 'DELETE', 'POST']:
+                return user in obj.conversation.participants.all()
 
-        # Default deny
+        # Deny by default
         return False
-
 
 class IsOwnerOrReadOnly(BasePermission):
     """
