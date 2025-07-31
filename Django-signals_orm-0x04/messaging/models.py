@@ -57,6 +57,13 @@ class MessageHistory(models.Model):
     )
     old_message_body = models.TextField()
     edited_at = models.DateTimeField(auto_now_add=True)
-
+    edited_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='message_edits'
+    )
+    
     def __str__(self):
         return f"Edit of Message {self.message.message_id} at {self.edited_at}"

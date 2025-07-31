@@ -35,8 +35,11 @@ def conversation_detail(request, conversation_id):
     messages_qs = Message.objects.filter(conversation=conversation).select_related(
         'sender', 'receiver', 'parent_message'
     ).prefetch_related('replies').order_by('sent_at')
+    
+    # Optionally, if you want to filter messages only by sender(e.g logged_in_user)
+    messages_qs = messages_qs.filter(sender=request.user)
 
-    # Build threaded structure
+    # Build threaded structure for frontend display
     threaded_messages = get_threaded_messages(messages_qs)
 
     context = {
@@ -45,7 +48,6 @@ def conversation_detail(request, conversation_id):
     }
 
     return render(request, 'messaging/conversation_detail.html', context)
-
 
 @login_required
 def delete_user(request):
