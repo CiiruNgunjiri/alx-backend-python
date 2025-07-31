@@ -64,7 +64,7 @@ def inbox(request):
     user = request.user
     # Using custom manager to get unread messages for the user,
     # retrieving only the specified fields with `.only()`
-    unread_messages = Message.unread.for_user(user)
+    unread_messages = Message.unread.unread_for_user(user)
 
     context = {
         'unread_messages': unread_messages,
