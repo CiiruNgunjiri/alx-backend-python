@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Conversation Messages</title>
+</head>
+<body>
+<h1>Conversation {{ conversation.conversation_id }}</h1>
+
+{% comment "Recursive render of threaded messages" %}
+{% macro render_message_node(node) %}
+  <div style="margin-left: 20px;">
+    <p><b>{{ node.message.sender.email }}</b>: {{ node.message.content }}</p>
+    <small>{{ node.message.sent_at }}</small>
+    {% if node.replies %}
+      {% for reply in node.replies %}
+        {{ render_message_node(reply) }}
+      {% endfor %}
+    {% endif %}
+  </div>
+{% endmacro %}
+
+{% for node in threaded_messages %}
+  {{ render_message_node(node) }}
+{% empty %}
+  <p>No messages yet.</p>
+{% endfor %}
+</body>
+</html>

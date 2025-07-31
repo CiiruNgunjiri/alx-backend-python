@@ -1,0 +1,12 @@
+<h2>Your Unread Messages</h2>
+<ul>
+  {% for msg in unread_messages %}
+    <li>
+      From: {{ msg.sender.email }} <br>
+      Content: {{ msg.content|truncatewords:20 }} <br>
+      Sent at: {{ msg.sent_at }}
+    </li>
+  {% empty %}
+    <li>You have no unread messages.</li>
+  {% endfor %}
+</ul>
