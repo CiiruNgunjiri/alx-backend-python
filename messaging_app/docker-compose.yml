@@ -14,13 +14,13 @@ services:
 
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python3 manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
     ports:
       - "8000:8000"
     environment:
-      - DB_NAME=${MYSQL_DATABASE}
+      - DB_NAME=${MYSQL_DB}
       - DB_USER=${MYSQL_USER}
       - DB_PASSWORD=${MYSQL_PASSWORD}
       - DB_HOST=db
