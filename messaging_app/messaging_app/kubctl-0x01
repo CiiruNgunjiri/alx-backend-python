@@ -9,7 +9,7 @@ APP_PORT=80                # The service port (ClusterIP port)
 
 # 1. Scale the deployment to 3 replicas
 echo "Scaling deployment $DEPLOYMENT_NAME to 3 replicas..."
-kubectl scale --replicas=3 deployment/$DEPLOYMENT_NAME -n $NAMESPACE
+kubectl scale deployment $DEPLOYMENT_NAME --replicas=3 -n $NAMESPACE
 
 # 2. Verify the pods are running
 echo "Waiting for pods to be ready..."
