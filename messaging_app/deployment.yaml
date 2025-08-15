@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-messaging-deployment
+  labels:
+    app: django-messaging
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: django-messaging
+  template:
+    metadata:
+      labels:
+        app: django-messaging
+    spec:
+      containers:
+      - name: django-messaging-container
+        image: linda575/django-messaging-app:latest
+        ports:
+        - containerPort: 8000
+        imagePullPolicy: IfNotPresent
+      imagePullSecrets:
+      - name: regcred
+      

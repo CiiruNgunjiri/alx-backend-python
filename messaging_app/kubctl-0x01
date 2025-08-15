@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Set your deployment name (adjust if different)
+DEPLOYMENT_NAME="django-messaging-deployment"
+NAMESPACE="default"  # Change if your deployment is in a different namespace
+SERVICE_NAME="django-messaging-service"
+APP_URL="http://localhost"  # Assuming you can access the service locally, else adjust URL accordingly
+APP_PORT=80                # The service port (ClusterIP port)
+
+# 1. Scale the deployment to 3 replicas
+echo "Scaling deployment $DEPLOYMENT_NAME to 3 replicas..."
+kubectl scale --replicas=3 deployment/$DEPLOYMENT_NAME -n $NAMESPACE
+
+# 2. Verify the pods are running
+echo "Waiting for pods to be ready..."
+kubectl rollout status deployment/$DEPLOYMENT_NAME -n $NAMESPACE
+
+echo "Listing pods:"
+kubectl get pods -l app=django-messaging -n $NAMESPACE
+
+# 3. Run load testing using wrk
+# Ensure wrk is installed on your machine
+echo "Starting load test on the Django app..."
+
+# Optional: Setup port forwarding if app not accessible externally
+kubectl port-forward svc/$SERVICE_NAME 8080:$APP_PORT -n $NAMESPACE &
+PORT_FORWARD_PID=$!
+
+# Give port forward a few seconds to start
+sleep 5
+
+# Run wrk for 30 seconds with 10 connections and 10 threads
+wrk -t10 -c10 -d30s http://localhost:8080/
+
+# Kill port forwarding
+kill $PORT_FORWARD_PID
+
+# 4. Monitor Resource Usage using kubectl top nodes and pods
+echo "Resource usage - Nodes:"
+kubectl top nodes
+
+echo "Resource usage - Pods in deployment:"
+kubectl top pods -l app=django-messaging -n $NAMESPACE
+
+echo "Script complete."
+
