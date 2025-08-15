@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Apply blue deployment
+echo "Deploying blue version..."
+kubectl apply -f blue_deployment.yaml
+
+# Apply green deployment
+echo "Deploying green version..."
+kubectl apply -f green_deployment.yaml
+
+# Apply (or ensure) service points to blue initially
+echo "Setting service selector to blue..."
+kubectl apply -f kubeservice.yaml
+
+echo "Waiting for green pods to be ready..."
+kubectl rollout status deployment/django-app-green
+
+# Check logs for issues in green deployment (example: last 100 lines of first pod)
+GREEN_POD=$(kubectl get pods -l app=django-app,version=v2 -o jsonpath='{.items[0].metadata.name}')
+echo "Checking logs of green pod: $GREEN_POD"
+kubectl logs --tail=100 $GREEN_POD
+
+# If everything looks good, switch traffic to green by patching service selector
+echo "Switching service to green deployment..."
+kubectl patch svc django-app-service -p '{"spec":{"selector":{"app":"django-app","version":"v2"}}}'
+
+echo "Service traffic switched to green version."
+
+# Optionally, monitor logs or wait for some time before deleting blue deployment
+

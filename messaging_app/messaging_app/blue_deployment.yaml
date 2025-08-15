@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-app-blue
+  labels:
+    app: django-app
+    version: v1
+    color: blue
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: django-app
+      version: v1
+      color: blue
+  template:
+    metadata:
+      labels:
+        app: django-app
+        version: v1
+        color: blue
+    spec:
+      containers:
+      - name: django-app
+        image: linda575/django-messaging-app:latest
+        ports:
+        - containerPort: 8000
+      imagePullSecrets:
+      - name: regcred
