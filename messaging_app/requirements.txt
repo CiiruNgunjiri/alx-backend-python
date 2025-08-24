@@ -45,4 +45,6 @@ wcwidth==0.2.13
 Django==4.x.x
 pytest
 pytest-django
+pytest-cov
+flake8
 coverage
