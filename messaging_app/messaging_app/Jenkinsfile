@@ -8,17 +8,17 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git credentialsId: env.GITHUB_CREDENTIALS, url: 'https://github.com/CiiruNgunjiri/alx-backend-python.git', branch: 'main'
+                git branch: 'main', credentialsId: env.GITHUB_CREDENTIALS, url: 'https://github.com/CiiruNgunjiri/alx-backend-python.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
                 sh '''
-                python3 -m venv venv
-                . venv/bin/activate
-                pip install -r messaging_app/requirements.txt
-                pip install pytest pytest-cov
+                python3 -m venv venv && \
+                . venv/bin/activate && \
+                pip3 install -r messaging_app/requirements.txt && \
+                pip3 install pytest pytest-cov
                 '''
             }
         }
@@ -26,8 +26,8 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                . venv/bin/activate
-                pytest --cov=messaging_app --junitxml=results.xml
+                . venv/bin/activate && \
+                pytest messaging_app --junitxml=results.xml
                 '''
             }
         }
@@ -37,6 +37,28 @@ pipeline {
                 junit 'results.xml'
             }
         }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("linda575/messaging_app:${env.BUILD_NUMBER}")
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-creds') {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+    }
+
+    triggers {
+        // No automatic trigger; manual run only
     }
 
     post {
