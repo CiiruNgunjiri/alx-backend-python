@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.11'
+            args '-u' // optional: run with unbuffered output for easier logs
+        }
+    }
 
     environment {
         GITHUB_CREDENTIALS = credentials('github-creds')
