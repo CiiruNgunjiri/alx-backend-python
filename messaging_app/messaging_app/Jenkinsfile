@@ -57,9 +57,9 @@ pipeline {
         }
     }
 
-    triggers {
-        // No automatic trigger; manual run only
-    }
+   
+    // No automatic trigger; manual run only
+   
 
     post {
         always {
